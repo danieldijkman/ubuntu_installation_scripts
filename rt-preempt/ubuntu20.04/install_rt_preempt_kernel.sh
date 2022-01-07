@@ -5,10 +5,10 @@ set -e
 
 # User input, you potentially need to update or change this values during your installation
 VERSION_MAJOR=5
-VERSION_SECOND=10
-VERSION_MINOR=56
+VERSION_SECOND=15
+VERSION_MINOR=12
 VERSION=$VERSION_MAJOR.$VERSION_SECOND.$VERSION_MINOR
-VERSION_PATCH=$VERSION-rt48
+VERSION_PATCH=$VERSION-rt25
 DEFAULT_CONFIG=/boot/config-$(uname -r)
 
 if [  ! -f  $DEFAULT_CONFIG ]; then
@@ -23,7 +23,7 @@ echo "==="
 echo "========================================================================="
 
 # Install dependencies to build kernel.
-sudo apt-get install -y libelf-dev libncurses5-dev libssl-dev kernel-package flex bison
+sudo apt-get install -y libelf-dev libncurses5-dev libssl-dev kernel-package flex bison dwarves
 
 # Install packages to test rt-preempt.
 sudo apt install rt-tests
@@ -65,6 +65,7 @@ make menuconfig -j
 # Disable the SYSTEM_TRUSTED_KEYS from the config.
 # SEE: https://askubuntu.com/a/1329625
 scripts/config --disable SYSTEM_TRUSTED_KEYS
+scripts/config --disable SYSTEM_REVOCATION_KEYS
 
 # Build the kernel.
 NUMBER_CPUS=`grep -c ^processor /proc/cpuinfo`
